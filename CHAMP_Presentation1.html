@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>CHAMP · V4 · 5 Objetivos Estratégicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#050505;--dark-gray:#1E2124;--white:#FFF;--primary-start:#560303;--primary-mid:#B4190C;--primary-end:#FB2E0A;--font:'IBM Plex Sans',sans-serif;--font-mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;font-family:var(--font);background:var(--black);color:var(--white);overflow:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── ASPECT RATIO WRAPPER 16:9 ── */
+.aspect-wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#000}
+.deck{position:relative;width:100%;height:100%;max-width:calc(100vh * 16 / 9);max-height:calc(100vw * 9 / 16);aspect-ratio:16/9;overflow:hidden;background:var(--black)}
+
+.slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .8s ease;z-index:1}
+.slide.active{opacity:1;pointer-events:all;z-index:2}
+
+/* Pillar slides grid */
+.slide--pillar{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto;grid-template-areas:"topbar topbar""left right""footer footer"}
+
+/* Overview slide layout */
+.slide--overview{display:flex;flex-direction:column}
+
+/* ── BG (global, behind deck) ── */
+.bg-glows{position:absolute;inset:0;pointer-events:none;z-index:0}.bg-glows::before{content:'';position:absolute;bottom:-25%;right:-10%;width:65%;height:75%;background:radial-gradient(ellipse at center,rgba(86,3,3,.5) 0%,rgba(86,3,3,.12) 40%,transparent 70%);filter:blur(60px)}.bg-glows::after{content:'';position:absolute;bottom:-35%;right:-15%;width:45%;height:55%;background:radial-gradient(ellipse at center,rgba(251,46,10,.3) 0%,rgba(251,46,10,.06) 40%,transparent 65%);filter:blur(50px)}
+.bg-glow-tl{position:absolute;top:-15%;left:-10%;width:50%;height:50%;background:radial-gradient(ellipse at center,rgba(30,15,15,.45) 0%,transparent 60%);filter:blur(60px);pointer-events:none;z-index:0}
+.bg-grid{position:absolute;inset:0;pointer-events:none;z-index:1;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:120px 120px}
+.grain{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
+.vignette{position:absolute;inset:0;pointer-events:none;z-index:3;box-shadow:inset 0 0 200px 60px rgba(0,0,0,.45)}
+/* crosshairs removed */
+
+/* ── TOP BAR (shared) ── */
+.top-bar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 4.2%;height:6.5%;margin-top:5.5%;flex-shrink:0}
+.slide--pillar .top-bar{grid-area:topbar}
+.top-bar__brand{display:flex;align-items:center;gap:12px}.top-bar__dot{width:14px;height:14px;border-radius:50%;background:var(--primary-end)}.top-bar__name{font-size:clamp(12px,1.15vw,20px);font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.92)}.top-bar__meta{font-family:var(--font-mono);font-size:clamp(11px,1vw,18px);color:rgba(255,255,255,.5)}.top-bar__line{position:absolute;bottom:0;left:4.2%;right:4.2%;height:1px;background:rgba(255,255,255,.12)}
+
+/* ── FOOTER (shared) ── */
+.footer{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 4.2%;height:5%;margin-bottom:3.5%;flex-shrink:0}
+.slide--pillar .footer{grid-area:footer}
+.footer__line{position:absolute;top:0;left:4.2%;right:4.2%;height:1px;background:rgba(255,255,255,.09)}
+.footer__left,.footer__right{font-family:var(--font-mono);font-size:clamp(10px,.95vw,18px);color:rgba(255,255,255,.5)}
+.champ-nav{display:flex;gap:clamp(4px,.35vw,7px);align-items:center}
+.champ-nav__pill{font-family:var(--font-mono);font-size:clamp(10px,.8vw,14px);font-weight:500;width:clamp(24px,2vw,36px);height:clamp(24px,2vw,36px);display:flex;align-items:center;justify-content:center;border-radius:4px;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.25)}
+.champ-nav__pill--active{background:linear-gradient(135deg,var(--primary-start),var(--primary-end));border-color:transparent;color:var(--white);font-weight:600}
+
+/* ══════════ OVERVIEW SLIDE (CHAMP wallpaper) ══════════ */
+.cards-area{position:relative;z-index:10;flex:1;display:flex;align-items:center;justify-content:center;padding:1.5% 4.2% 0}
+.cards-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,.6vw,20px);width:100%;height:min(88%,780px);max-height:75%}
+.card{position:relative;background:rgba(30,33,36,.82);border:2px solid rgba(255,255,255,.09);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;padding:clamp(14px,1.8vw,36px);padding-top:0}
+.card::before{content:'';display:block;width:100%;height:4px;flex-shrink:0;background:linear-gradient(90deg,var(--primary-start),var(--primary-mid),var(--primary-end))}
+.card__step{font-family:var(--font-mono);font-size:clamp(9px,1vw,18px);color:rgba(255,255,255,.57);text-align:right;padding-top:clamp(10px,1.2vh,24px);flex-shrink:0}.card__step span{color:rgba(255,255,255,.24)}
+.card__letter{font-size:clamp(80px,20vw,360px);font-weight:700;line-height:.85;letter-spacing:-.04em;background:linear-gradient(135deg,var(--primary-start) 0%,var(--primary-mid) 45%,var(--primary-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0;margin-top:clamp(6px,.6vh,14px)}
+.card__content{margin-top:auto;display:flex;flex-direction:column}
+.card__sub{font-size:clamp(7px,.8vw,14px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--primary-end);opacity:.94}
+.card__title{font-size:clamp(12px,1.6vw,30px);font-weight:700;color:var(--white);margin-top:clamp(3px,.4vh,6px);line-height:1.15}
+.card__hairline{width:clamp(40px,4.5vw,90px);height:3px;background:linear-gradient(90deg,var(--primary-start),var(--primary-end));border-radius:2px;margin-top:clamp(8px,1.1vh,18px)}
+.card__statement{font-size:clamp(11px,1.4vw,26px);font-weight:700;color:rgba(255,255,255,.98);line-height:1.4;margin-top:clamp(8px,1vh,14px)}
+.card__desc{font-size:clamp(9px,.9vw,16px);font-weight:400;color:rgba(255,255,255,.6);line-height:1.5;margin-top:clamp(8px,1.5vh,24px);max-width:95%}
+
+/* Card stagger entrance */
+.slide--overview .card{opacity:0;transform:translateY(30px) scale(.96)}
+.slide--overview.active .card{animation:cardReveal .7s cubic-bezier(.16,1,.3,1) forwards}
+.slide--overview.active .card:nth-child(1){animation-delay:.3s}
+.slide--overview.active .card:nth-child(2){animation-delay:.55s}
+.slide--overview.active .card:nth-child(3){animation-delay:.8s}
+.slide--overview.active .card:nth-child(4){animation-delay:1.05s}
+.slide--overview.active .card:nth-child(5){animation-delay:1.3s}
+@keyframes cardReveal{to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ══════════ PILLAR SLIDES ══════════ */
+.left-col{grid-area:left;position:relative;z-index:10;display:flex;flex-direction:column;justify-content:center;padding:0 4.2%;padding-right:3%}
+.pillar-step{font-family:var(--font-mono);font-size:clamp(10px,.9vw,16px);color:rgba(255,255,255,.45);margin-bottom:clamp(8px,1vh,16px)}.pillar-step span{color:rgba(255,255,255,.2)}
+.pillar-sub{font-size:clamp(9px,.85vw,14px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--primary-end);margin-bottom:clamp(3px,.3vh,5px)}
+.pillar-title{font-size:clamp(56px,7vw,130px);font-weight:700;line-height:.92;letter-spacing:-.03em;margin-bottom:clamp(14px,2vh,32px);background:linear-gradient(135deg,var(--primary-mid) 0%,var(--primary-end) 60%,#FF7A5C 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pillar-title--sm{font-size:clamp(44px,5.5vw,100px)}.pillar-title--md{font-size:clamp(50px,6.5vw,120px)}
+.pillar-hairline{width:clamp(70px,7vw,130px);height:4px;background:linear-gradient(90deg,var(--primary-start),var(--primary-end));border-radius:2px;margin-bottom:clamp(14px,2vh,32px)}
+.pillar-statement{font-size:clamp(16px,1.9vw,36px);font-weight:700;line-height:1.25;color:rgba(255,255,255,.98);margin-bottom:clamp(8px,1.2vh,20px)}
+.pillar-desc{font-size:clamp(12px,1vw,18px);font-weight:400;line-height:1.6;color:rgba(255,255,255,.55);max-width:42ch}
+.pillar-bg-letter{position:absolute;left:-3%;top:50%;transform:translateY(-50%);font-size:clamp(240px,44vh,660px);font-weight:700;line-height:.8;letter-spacing:-.06em;background:linear-gradient(135deg,var(--primary-start) 0%,var(--primary-mid) 45%,var(--primary-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.12;pointer-events:none;z-index:0;user-select:none}
+
+.right-col{grid-area:right;position:relative;z-index:10;display:flex;flex-direction:column;justify-content:center;padding:0 4.2%;padding-left:2%}
+.right-col::before{content:'';position:absolute;left:0;top:12%;bottom:12%;width:1px;background:rgba(255,255,255,.08)}
+.right-col--center{align-items:center}
+.scoreboard-label{display:flex;align-items:center;gap:10px;margin-bottom:clamp(10px,1.5vh,22px)}.scoreboard-label--self-start{align-self:flex-start}.scoreboard-label__dot{width:8px;height:8px;border-radius:50%;background:var(--primary-end)}.scoreboard-label__text{font-size:clamp(9px,.8vw,13px);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.scoreboard-updated{font-family:var(--font-mono);font-size:clamp(8px,.65vw,11px);color:rgba(255,255,255,.2);margin-top:clamp(6px,.8vh,12px);text-align:right}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.kpi-card{background:var(--dark-gray);padding:clamp(10px,1.2vw,22px);display:flex;flex-direction:column;gap:clamp(1px,.25vh,4px)}
+.kpi-card--hero{grid-column:1/-1;padding:clamp(14px,1.6vw,28px) clamp(12px,1.4vw,24px)}.kpi-card--hero .kpi-card__label{font-size:clamp(9px,.8vw,14px);margin-bottom:clamp(3px,.4vh,8px)}.kpi-card--hero .kpi-card__sub{font-size:clamp(9px,.75vw,13px);color:rgba(255,255,255,.35);margin-top:clamp(1px,.2vh,4px)}.kpi-card--hero .kpi-progress{height:clamp(5px,.5vh,7px);margin-top:clamp(6px,.6vh,10px)}
+.kpi-card__label{font-size:clamp(7px,.62vw,11px);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);line-height:1.35}
+.kpi-card__value{font-family:var(--font-mono);font-weight:600;line-height:1;background:linear-gradient(135deg,var(--primary-mid) 0%,var(--primary-end) 50%,#FF7A5C 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.kpi-card__value--lg{font-size:clamp(24px,3.2vw,60px)}.kpi-card__value--hero-lg{font-size:clamp(28px,4vw,72px)}.kpi-card__value--md{font-size:clamp(16px,2vw,36px)}.kpi-card__value--white{background:none;-webkit-text-fill-color:var(--white);color:var(--white)}
+.kpi-card__sub{font-size:clamp(7px,.6vw,10px);font-weight:400;color:rgba(255,255,255,.28);line-height:1.4}
+.kpi-progress{width:100%;height:clamp(3px,.3vh,4px);background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-top:clamp(3px,.4vh,6px)}.kpi-progress__fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--primary-start),var(--primary-end))}
+
+/* Milestones */
+.milestones{grid-column:1/-1;background:var(--dark-gray);padding:clamp(10px,1.2vw,20px) clamp(10px,1.2vw,22px)}.milestones__label{font-size:clamp(7px,.62vw,11px);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:clamp(6px,.8vh,12px)}.milestones__track{display:flex;align-items:center;position:relative}.milestone{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1}.milestone__dot{width:clamp(8px,.85vw,14px);height:clamp(8px,.85vw,14px);border-radius:50%;border:2px solid rgba(255,255,255,.15);background:var(--dark-gray);margin-bottom:clamp(3px,.4vh,6px)}.milestone--done .milestone__dot{background:linear-gradient(135deg,var(--primary-start),var(--primary-end));border-color:var(--primary-end)}.milestone--current .milestone__dot{border-color:var(--primary-end);box-shadow:0 0 10px rgba(251,46,10,.5)}.milestone__label{font-family:var(--font-mono);font-size:clamp(7px,.6vw,11px);color:rgba(255,255,255,.3);font-weight:500;text-align:center;line-height:1.3}.milestone--done .milestone__label{color:rgba(255,255,255,.6)}.milestone--current .milestone__label{color:var(--primary-end);font-weight:600}.milestones__line{position:absolute;top:clamp(3px,.4vw,6px);left:8%;right:8%;height:2px;background:rgba(255,255,255,.08);z-index:0}.milestones__line-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary-start),var(--primary-end));border-radius:1px}
+
+/* Readiness rows (M) */
+.readiness-row{grid-column:1/-1;background:var(--dark-gray);padding:clamp(10px,1.1vw,18px) clamp(10px,1.2vw,22px);display:grid;grid-template-columns:auto 1fr auto;gap:clamp(6px,.8vw,14px);align-items:center}.readiness-letter{font-family:var(--font-mono);font-size:clamp(14px,1.6vw,28px);font-weight:700;width:clamp(26px,2.4vw,42px);height:clamp(26px,2.4vw,42px);display:flex;align-items:center;justify-content:center;border-radius:6px;background:linear-gradient(135deg,var(--primary-start),var(--primary-end));color:var(--white);flex-shrink:0}.readiness-info{display:flex;flex-direction:column;gap:clamp(1px,.2vh,4px);min-width:0}.readiness-info__title{font-size:clamp(9px,.8vw,14px);font-weight:600;color:rgba(255,255,255,.85)}.readiness-info__meta{font-family:var(--font-mono);font-size:clamp(7px,.55vw,9px);color:rgba(255,255,255,.3)}.readiness-bar{width:100%;height:clamp(3px,.3vh,4px);background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}.readiness-bar__fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--primary-start),var(--primary-end))}.readiness-pct{font-family:var(--font-mono);font-size:clamp(13px,1.5vw,26px);font-weight:600;color:var(--white);text-align:right;min-width:clamp(40px,4vw,70px)}
+
+/* Flywheel (P) */
+.flywheel-wrap{position:relative;width:clamp(280px,36vw,560px);height:clamp(280px,36vw,560px);flex-shrink:0}.flywheel-svg{width:100%;height:100%;overflow:visible}.flywheel-ring{transform-origin:260px 260px}
+.slide.active .flywheel-ring{animation:flywheelSpin 3s cubic-bezier(.16,1,.3,1) forwards}@keyframes flywheelSpin{from{transform:rotate(-120deg);opacity:0}to{transform:rotate(0deg);opacity:1}}
+.fw-node-glow{animation:nodePulse 3s ease-in-out infinite alternate}@keyframes nodePulse{0%{opacity:.15}100%{opacity:.35}}
+.flywheel-center{opacity:0}.slide.active .flywheel-center{animation:fadeCenterIn 1s ease 1.5s forwards}@keyframes fadeCenterIn{to{opacity:1}}
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-top:clamp(12px,2vh,28px);width:100%}.health-card{background:var(--dark-gray);padding:clamp(8px,1vw,16px);display:flex;flex-direction:column;gap:clamp(1px,.25vh,4px);text-align:center;align-items:center}.health-card__label{font-size:clamp(7px,.65vw,11px);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);line-height:1.35}.health-card__value{font-family:var(--font-mono);font-weight:600;line-height:1;font-size:clamp(18px,2.4vw,42px)}.health-card__value--gradient{background:linear-gradient(135deg,var(--primary-mid) 0%,var(--primary-end) 50%,#FF7A5C 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.health-card__value--white{color:var(--white)}.health-card__sub{font-size:clamp(6px,.5vw,9px);font-weight:400;color:rgba(255,255,255,.25);line-height:1.3}
+
+/* Progress bar */
+.slide-progress{position:absolute;top:0;left:0;width:100%;height:3px;z-index:999;background:rgba(255,255,255,.04)}.slide-progress__fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary-start),var(--primary-end))}
+</style>
+</head>
+<body>
+<div class="aspect-wrap">
+<div class="deck">
+<div class="slide-progress"><div class="slide-progress__fill" id="progressBar"></div></div>
+<div class="bg-glows"></div><div class="bg-glow-tl"></div><div class="bg-grid"></div><div class="grain"></div><div class="vignette"></div>
+
+
+<!-- ══ SLIDE 0: CHAMP OVERVIEW ══ -->
+<div class="slide slide--overview active" id="slide-overview">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">FRAMEWORK · 2026</div><div class="top-bar__line"></div></div>
+<div class="cards-area"><div class="cards-grid">
+<div class="card"><div class="card__step">01 <span>/ 05</span></div><div class="card__letter">C</div><div class="card__content"><div class="card__sub">100M de Consumidores</div><div class="card__title">CONSUMER</div><div class="card__hairline"></div><div class="card__statement">Ganhar a<br>confiança.</div><div class="card__desc">Alcançar 100 milhões de consumidores com jornadas que reduzem assimetria de informação.</div></div></div>
+<div class="card"><div class="card__step">02 <span>/ 05</span></div><div class="card__letter">H</div><div class="card__content"><div class="card__sub">100K Accounts</div><div class="card__title">HOSTS</div><div class="card__hairline"></div><div class="card__statement">Converter<br>atenção em contas.</div><div class="card__desc">Conquistar e expandir 100k marcas com valor comprovado.</div></div></div>
+<div class="card"><div class="card__step">03 <span>/ 05</span></div><div class="card__letter">A</div><div class="card__content"><div class="card__sub">R$ 5,35B Receita Anual</div><div class="card__title">ANNUAL REVENUE</div><div class="card__hairline"></div><div class="card__statement">Unit economics<br>saudáveis.</div><div class="card__desc">Atingir R$ 5,35B de receita anual majoritariamente via Pay-Per-Value.</div></div></div>
+<div class="card"><div class="card__step">04 <span>/ 05</span></div><div class="card__letter">M</div><div class="card__content"><div class="card__sub">IPO</div><div class="card__title">MILESTONE</div><div class="card__hairline"></div><div class="card__statement">Acessar capital<br>e acelerar a tese.</div><div class="card__desc">Realizar o IPO para acessar capital e acelerar a tese.</div></div></div>
+<div class="card"><div class="card__step">05 <span>/ 05</span></div><div class="card__letter">P</div><div class="card__content"><div class="card__sub">Longo Prazo</div><div class="card__title">PERPETUITY</div><div class="card__hairline"></div><div class="card__statement">Perpetuar<br>o negócio.</div><div class="card__desc">Reinvestir para ampliar MOAT e crescer o VPL no longo prazo.</div></div></div>
+</div></div>
+<div class="footer"><div class="footer__line"></div><div class="footer__left">[ C · H · A · M · P ]</div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+<!-- ══ SLIDE 1: C ══ -->
+<div class="slide slide--pillar" id="slide-c">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">CHAMP · 01 / 05</div><div class="top-bar__line"></div></div>
+<div class="left-col"><div class="pillar-bg-letter">C</div><div class="pillar-step">01 <span>/ 05</span></div><div class="pillar-sub">100M de Consumidores</div><div class="pillar-title">Consumers</div><div class="pillar-hairline"></div><div class="pillar-statement">Ganhar a confiança<br>do consumidor.</div><div class="pillar-desc">Alcançar 100 milhões de consumidores com jornadas que reduzem assimetria de informação.</div></div>
+<div class="right-col"><div class="scoreboard-label"><div class="scoreboard-label__dot"></div><div class="scoreboard-label__text">Placar · Consumers</div></div><div class="kpi-grid"><div class="kpi-card kpi-card--hero"><div class="kpi-card__label">Consumidores alcançados</div><div class="kpi-card__value kpi-card__value--hero-lg" id="c-hero">0</div><div class="kpi-progress"><div class="kpi-progress__fill" id="c-bar"></div></div><div class="kpi-card__sub">Meta: 100.000.000</div></div><div class="kpi-card"><div class="kpi-card__label">Percentual<br>alcançado</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="c-pct">0%</div><div class="kpi-card__sub">da meta de 100M</div></div><div class="kpi-card"><div class="kpi-card__label">Consumidores<br>restantes</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="c-rem">0</div><div class="kpi-card__sub">para atingir 100M</div></div><div class="kpi-card"><div class="kpi-card__label">Fator de crescimento<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="c-factor">—</div><div class="kpi-card__sub">para bater a meta</div></div><div class="kpi-card"><div class="kpi-card__label">Crescimento mensal<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="c-monthly">0</div><div class="kpi-card__sub">até dez/2030 (~56 meses)</div></div><div class="kpi-card"><div class="kpi-card__label">CAGR<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="c-cagr">0%</div><div class="kpi-card__sub">taxa composta anual até 2030</div></div><div class="kpi-card"><div class="kpi-card__label">Próximo<br>marco</div><div class="kpi-card__value kpi-card__value--md" id="c-next">5M</div><div class="kpi-progress"><div class="kpi-progress__fill" id="c-nextbar"></div></div><div class="kpi-card__sub" id="c-nextsub">0%</div></div><div class="milestones"><div class="milestones__label">Marcos · Roadmap to 100M</div><div class="milestones__track"><div class="milestones__line"><div class="milestones__line-fill" id="c-msline"></div></div><div class="milestone milestone--done"><div class="milestone__dot"></div><div class="milestone__label">2M ✓</div></div><div class="milestone milestone--current"><div class="milestone__dot"></div><div class="milestone__label">5M</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">10M</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">25M</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">50M</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">100M</div></div></div></div></div><div class="scoreboard-updated">Atualizado em: 21 abr 2026</div></div>
+<div class="footer"><div class="footer__line"></div><div class="champ-nav"><div class="champ-nav__pill champ-nav__pill--active">C</div><div class="champ-nav__pill">H</div><div class="champ-nav__pill">A</div><div class="champ-nav__pill">M</div><div class="champ-nav__pill">P</div></div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+<!-- ══ SLIDE 2: H ══ -->
+<div class="slide slide--pillar" id="slide-h">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">CHAMP · 02 / 05</div><div class="top-bar__line"></div></div>
+<div class="left-col"><div class="pillar-bg-letter">H</div><div class="pillar-step">02 <span>/ 05</span></div><div class="pillar-sub">100K Accounts</div><div class="pillar-title">Hosts</div><div class="pillar-hairline"></div><div class="pillar-statement">Converter atenção<br>em contas.</div><div class="pillar-desc">Conquistar e expandir 100k marcas com valor comprovado.</div></div>
+<div class="right-col"><div class="scoreboard-label"><div class="scoreboard-label__dot"></div><div class="scoreboard-label__text">Placar · Hosts</div></div><div class="kpi-grid"><div class="kpi-card kpi-card--hero"><div class="kpi-card__label">Hosts alcançados</div><div class="kpi-card__value kpi-card__value--hero-lg" id="h-hero">0</div><div class="kpi-progress"><div class="kpi-progress__fill" id="h-bar"></div></div><div class="kpi-card__sub">Meta: 100.000</div></div><div class="kpi-card"><div class="kpi-card__label">Percentual<br>alcançado</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="h-pct">0%</div><div class="kpi-card__sub">da meta de 100K</div></div><div class="kpi-card"><div class="kpi-card__label">Hosts<br>restantes</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="h-rem">0</div><div class="kpi-card__sub">para atingir 100K</div></div><div class="kpi-card"><div class="kpi-card__label">Fator de crescimento<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="h-factor">—</div><div class="kpi-card__sub">para bater a meta</div></div><div class="kpi-card"><div class="kpi-card__label">Crescimento mensal<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="h-monthly">0</div><div class="kpi-card__sub">até dez/2030 (~56 meses)</div></div><div class="kpi-card"><div class="kpi-card__label">CAGR<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="h-cagr">0%</div><div class="kpi-card__sub">taxa composta anual até 2030</div></div><div class="kpi-card"><div class="kpi-card__label">Próximo<br>marco</div><div class="kpi-card__value kpi-card__value--md" id="h-next">10K</div><div class="kpi-progress"><div class="kpi-progress__fill" id="h-nextbar"></div></div><div class="kpi-card__sub" id="h-nextsub">0%</div></div><div class="milestones"><div class="milestones__label">Marcos · Roadmap to 100K</div><div class="milestones__track"><div class="milestones__line"><div class="milestones__line-fill" id="h-msline"></div></div><div class="milestone milestone--done"><div class="milestone__dot"></div><div class="milestone__label">5K ✓</div></div><div class="milestone milestone--current"><div class="milestone__dot"></div><div class="milestone__label">10K</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">25K</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">50K</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">75K</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">100K</div></div></div></div></div><div class="scoreboard-updated">Atualizado em: 21 abr 2026</div></div>
+<div class="footer"><div class="footer__line"></div><div class="champ-nav"><div class="champ-nav__pill">C</div><div class="champ-nav__pill champ-nav__pill--active">H</div><div class="champ-nav__pill">A</div><div class="champ-nav__pill">M</div><div class="champ-nav__pill">P</div></div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+<!-- ══ SLIDE 3: A ══ -->
+<div class="slide slide--pillar" id="slide-a">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">CHAMP · 03 / 05</div><div class="top-bar__line"></div></div>
+<div class="left-col"><div class="pillar-bg-letter">A</div><div class="pillar-step">03 <span>/ 05</span></div><div class="pillar-sub">R$ 5,35B Receita Anual</div><div class="pillar-title pillar-title--sm">Annual<br>Revenue</div><div class="pillar-hairline"></div><div class="pillar-statement">Unit economics<br>saudáveis.</div><div class="pillar-desc">Atingir R$ 5,35B de receita anual com unit economics saudáveis majoritariamente via Pay-Per-Value.</div></div>
+<div class="right-col"><div class="scoreboard-label"><div class="scoreboard-label__dot"></div><div class="scoreboard-label__text">Placar · Annual Revenue</div></div><div class="kpi-grid"><div class="kpi-card kpi-card--hero"><div class="kpi-card__label">Receita anual acumulada</div><div class="kpi-card__value kpi-card__value--lg" id="a-hero">R$ 0</div><div class="kpi-progress"><div class="kpi-progress__fill" id="a-bar"></div></div><div class="kpi-card__sub">Meta: R$ 5.350.000.000</div></div><div class="kpi-card"><div class="kpi-card__label">Percentual<br>alcançado</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="a-pct">0%</div><div class="kpi-card__sub">da meta de R$ 5,35B</div></div><div class="kpi-card"><div class="kpi-card__label">Receita<br>restante</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="a-rem">R$ 0</div><div class="kpi-card__sub">para atingir R$ 5,35B</div></div><div class="kpi-card"><div class="kpi-card__label">Fator de crescimento<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="a-factor">—</div><div class="kpi-card__sub">para bater a meta</div></div><div class="kpi-card"><div class="kpi-card__label">Crescimento mensal<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="a-monthly">R$ 0</div><div class="kpi-card__sub">até dez/2030 (~56 meses)</div></div><div class="kpi-card"><div class="kpi-card__label">CAGR<br>necessário</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="a-cagr">0%</div><div class="kpi-card__sub">taxa composta anual até 2030</div></div><div class="kpi-card"><div class="kpi-card__label">Próximo<br>marco</div><div class="kpi-card__value kpi-card__value--md" id="a-next">R$ 1B</div><div class="kpi-progress"><div class="kpi-progress__fill" id="a-nextbar"></div></div><div class="kpi-card__sub" id="a-nextsub">0%</div></div><div class="milestones"><div class="milestones__label">Marcos · Roadmap to R$ 5,35B</div><div class="milestones__track"><div class="milestones__line"><div class="milestones__line-fill" id="a-msline"></div></div><div class="milestone milestone--done"><div class="milestone__dot"></div><div class="milestone__label">500M ✓</div></div><div class="milestone milestone--current"><div class="milestone__dot"></div><div class="milestone__label">1B</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">2B</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">3B</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">4B</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">5,35B</div></div></div></div></div><div class="scoreboard-updated">Atualizado em: 21 abr 2026</div></div>
+<div class="footer"><div class="footer__line"></div><div class="champ-nav"><div class="champ-nav__pill">C</div><div class="champ-nav__pill">H</div><div class="champ-nav__pill champ-nav__pill--active">A</div><div class="champ-nav__pill">M</div><div class="champ-nav__pill">P</div></div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+<!-- ══ SLIDE 4: M ══ -->
+<div class="slide slide--pillar" id="slide-m">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">CHAMP · 04 / 05</div><div class="top-bar__line"></div></div>
+<div class="left-col"><div class="pillar-bg-letter">M</div><div class="pillar-step">04 <span>/ 05</span></div><div class="pillar-sub">IPO · 2030</div><div class="pillar-title pillar-title--md">Milestone</div><div class="pillar-hairline"></div><div class="pillar-statement">Acessar capital<br>e acelerar a tese.</div><div class="pillar-desc">Realizar o IPO para acessar capital, acelerar a tese e preparar o caminho para a perpetuidade.</div></div>
+<div class="right-col"><div class="scoreboard-label"><div class="scoreboard-label__dot"></div><div class="scoreboard-label__text">Placar · IPO Readiness</div></div><div class="kpi-grid"><div class="kpi-card kpi-card--hero"><div class="kpi-card__label">Tempo restante até dez/2030</div><div class="kpi-card__value kpi-card__value--lg" id="m-hero">0 meses</div><div class="kpi-progress"><div class="kpi-progress__fill" id="m-bar"></div></div><div class="kpi-card__sub">Horizonte: dezembro de 2030</div></div><div class="readiness-row"><div class="readiness-letter">C</div><div class="readiness-info"><div class="readiness-info__title">Consumers</div><div class="readiness-info__meta">2.157.912 / 100.000.000</div><div class="readiness-bar"><div class="readiness-bar__fill" id="m-barc"></div></div></div><div class="readiness-pct" id="m-pctc">0%</div></div><div class="readiness-row"><div class="readiness-letter">H</div><div class="readiness-info"><div class="readiness-info__title">Hosts</div><div class="readiness-info__meta">5.978 / 100.000</div><div class="readiness-bar"><div class="readiness-bar__fill" id="m-barh"></div></div></div><div class="readiness-pct" id="m-pcth">0%</div></div><div class="readiness-row"><div class="readiness-letter">A</div><div class="readiness-info"><div class="readiness-info__title">Annual Revenue</div><div class="readiness-info__meta">R$ 500,5M / R$ 5,35B</div><div class="readiness-bar"><div class="readiness-bar__fill" id="m-bara"></div></div></div><div class="readiness-pct" id="m-pcta">0%</div></div><div class="kpi-card"><div class="kpi-card__label">Readiness<br>médio</div><div class="kpi-card__value kpi-card__value--md kpi-card__value--white" id="m-avg">0%</div><div class="kpi-card__sub">média dos 3 pilares</div></div><div class="kpi-card"><div class="kpi-card__label">Pilar mais<br>avançado</div><div class="kpi-card__value kpi-card__value--md" id="m-best">—</div><div class="kpi-card__sub" id="m-bestsub">—</div></div><div class="milestones"><div class="milestones__label">Marcos · Jornada até o IPO</div><div class="milestones__track"><div class="milestones__line"></div><div class="milestone milestone--current"><div class="milestone__dot"></div><div class="milestone__label">Pré-IPO</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">Auditoria &<br>Governança</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">Roadshow</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">Listagem</div></div><div class="milestone"><div class="milestone__dot"></div><div class="milestone__label">IPO<br>2030</div></div></div></div></div><div class="scoreboard-updated">Atualizado em: 21 abr 2026</div></div>
+<div class="footer"><div class="footer__line"></div><div class="champ-nav"><div class="champ-nav__pill">C</div><div class="champ-nav__pill">H</div><div class="champ-nav__pill">A</div><div class="champ-nav__pill champ-nav__pill--active">M</div><div class="champ-nav__pill">P</div></div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+<!-- ══ SLIDE 5: P ══ -->
+<div class="slide slide--pillar" id="slide-p">
+<div class="top-bar"><div class="top-bar__brand"><div class="top-bar__dot"></div><div class="top-bar__name">V4 &nbsp;·&nbsp; 5 OBJETIVOS ESTRATÉGICOS</div></div><div class="top-bar__meta">CHAMP · 05 / 05</div><div class="top-bar__line"></div></div>
+<div class="left-col"><div class="pillar-bg-letter">P</div><div class="pillar-step">05 <span>/ 05</span></div><div class="pillar-sub">Longo Prazo</div><div class="pillar-title pillar-title--md">Perpetuity</div><div class="pillar-hairline"></div><div class="pillar-statement">Perpetuar<br>o negócio.</div><div class="pillar-desc">Reinvestir para ampliar MOAT e crescer o VPL no longo prazo. Cada volta do ciclo acelera a próxima.</div></div>
+<div class="right-col right-col--center"><div class="scoreboard-label scoreboard-label--self-start"><div class="scoreboard-label__dot"></div><div class="scoreboard-label__text">Flywheel · Valor Composto</div></div><div class="flywheel-wrap"><svg class="flywheel-svg" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#560303"/><stop offset="50%" stop-color="#B4190C"/><stop offset="100%" stop-color="#FB2E0A"/></linearGradient><linearGradient id="gradLight" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FB2E0A"/><stop offset="100%" stop-color="#FF7A5C"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="10" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="rgba(251,46,10,0.6)"/></marker></defs><g class="flywheel-ring"><circle cx="260" cy="260" r="190" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="2"/><circle cx="260" cy="260" r="190" fill="none" stroke="url(#grad)" stroke-width="2.5" stroke-dasharray="10,14" opacity="0.35"/><path d="M 315 85 A 190 190 0 0 1 425 195" fill="none" stroke="rgba(251,46,10,0.3)" stroke-width="3" marker-end="url(#arrowhead)"/><path d="M 440 285 A 190 190 0 0 1 375 418" fill="none" stroke="rgba(251,46,10,0.3)" stroke-width="3" marker-end="url(#arrowhead)"/><path d="M 305 448 A 190 190 0 0 1 155 418" fill="none" stroke="rgba(251,46,10,0.3)" stroke-width="3" marker-end="url(#arrowhead)"/><path d="M 95 360 A 190 190 0 0 1 82 210" fill="none" stroke="rgba(251,46,10,0.3)" stroke-width="3" marker-end="url(#arrowhead)"/><path d="M 115 140 A 190 190 0 0 1 228 76" fill="none" stroke="rgba(251,46,10,0.3)" stroke-width="3" marker-end="url(#arrowhead)"/><g><circle class="fw-node-glow" cx="260" cy="70" r="56" fill="rgba(251,46,10,0.18)"/><circle cx="260" cy="70" r="42" fill="#1E2124" stroke="url(#grad)" stroke-width="3"/><text x="260" y="64" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="28" font-weight="700" fill="url(#gradLight)">C</text><text x="260" y="86" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10.5" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">CONSUMERS</text></g><g><circle class="fw-node-glow" cx="440" cy="190" r="56" fill="rgba(251,46,10,0.18)" style="animation-delay:0.6s"/><circle cx="440" cy="190" r="42" fill="#1E2124" stroke="url(#grad)" stroke-width="3"/><text x="440" y="184" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="28" font-weight="700" fill="url(#gradLight)">H</text><text x="440" y="206" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10.5" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">HOSTS</text></g><g><circle class="fw-node-glow" cx="372" cy="418" r="56" fill="rgba(251,46,10,0.18)" style="animation-delay:1.2s"/><circle cx="372" cy="418" r="42" fill="#1E2124" stroke="url(#grad)" stroke-width="3"/><text x="372" y="412" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="28" font-weight="700" fill="url(#gradLight)">A</text><text x="372" y="434" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">REVENUE</text></g><g><circle class="fw-node-glow" cx="148" cy="418" r="56" fill="rgba(251,46,10,0.18)" style="animation-delay:1.8s"/><circle cx="148" cy="418" r="42" fill="#1E2124" stroke="url(#grad)" stroke-width="3"/><text x="148" y="412" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="28" font-weight="700" fill="url(#gradLight)">M</text><text x="148" y="434" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9.5" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">MILESTONE</text></g><g filter="url(#glow)"><circle class="fw-node-glow" cx="80" cy="190" r="60" fill="rgba(251,46,10,0.28)" style="animation-delay:2.4s"/><circle cx="80" cy="190" r="44" fill="url(#grad)" stroke="#FF7A5C" stroke-width="2.5"/><text x="80" y="184" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="30" font-weight="700" fill="#FFF">P</text><text x="80" y="207" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9.5" font-weight="600" fill="rgba(255,255,255,0.85)" letter-spacing="0.1em">PERPETUITY</text></g></g><g class="flywheel-center"><text x="260" y="235" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="14" font-weight="600" fill="rgba(255,255,255,0.4)" letter-spacing="0.14em">VALOR</text><text x="260" y="270" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="30" font-weight="700" fill="url(#gradLight)">Composto</text><line x1="225" y1="284" x2="295" y2="284" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/><text x="260" y="306" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" fill="rgba(255,255,255,0.3)">cada volta acelera</text><text x="260" y="322" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" fill="rgba(255,255,255,0.3)">a próxima</text></g></svg></div><div class="health-grid"><div class="health-card"><div class="health-card__label">Velocidade do<br>Flywheel</div><div class="health-card__value health-card__value--gradient" id="p-speed">0%</div><div class="health-card__sub">readiness médio</div></div><div class="health-card"><div class="health-card__label">Pilares<br>ativos</div><div class="health-card__value health-card__value--white" id="p-pillars">0/5</div><div class="health-card__sub">em execução</div></div><div class="health-card"><div class="health-card__label">Horizonte de<br>perpetuidade</div><div class="health-card__value health-card__value--white" id="p-horizon">—</div><div class="health-card__sub">pós-IPO 2030</div></div></div><div class="scoreboard-updated">Atualizado em: 21 abr 2026</div></div>
+<div class="footer"><div class="footer__line"></div><div class="champ-nav"><div class="champ-nav__pill">C</div><div class="champ-nav__pill">H</div><div class="champ-nav__pill">A</div><div class="champ-nav__pill">M</div><div class="champ-nav__pill champ-nav__pill--active">P</div></div><div class="footer__right">V4 COMPANY · 2026</div></div>
+</div>
+
+</div><!-- /deck -->
+</div><!-- /aspect-wrap -->
+
+<script>
+// ══════ DATA — update daily ══════
+const DATA={c:{current:2157912,target:100000000,nextMile:5000000},h:{current:5978,target:100000,nextMile:10000},a:{current:500561418,target:5350000000,nextMile:1000000000}};
+const MONTHS_LEFT=56,MONTHS_TOTAL=84;
+function derive(d){const p=(d.current/d.target)*100,r=d.target-d.current,f=d.target/d.current,m=r/MONTHS_LEFT,cg=(Math.pow(d.target/d.current,1/(MONTHS_LEFT/12))-1)*100,np=(d.current/d.nextMile)*100;return{pct:p,rem:r,factor:f,monthly:m,cagr:cg,nextPct:np}}
+const C=derive(DATA.c),H=derive(DATA.h),A=derive(DATA.a);
+const AVG=(C.pct+H.pct+A.pct)/3;
+const BEST=[{l:'A',p:A.pct,n:'Annual Revenue'},{l:'H',p:H.pct,n:'Hosts'},{l:'C',p:C.pct,n:'Consumers'}].sort((a,b)=>b.p-a.p)[0];
+const TIME_PCT=((MONTHS_TOTAL-MONTHS_LEFT)/MONTHS_TOTAL)*100;
+
+const fI=n=>Math.round(n).toLocaleString('pt-BR');
+const fD=(n,d)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fS=n=>n>=1e6?fD(n/1e6,1)+'M':n>=1e3?fI(Math.round(n/1e3))+'K':fI(n);
+const fB=n=>n>=1e9?'R$ '+fD(n/1e9,2)+'B':n>=1e6?'R$ '+fD(n/1e6,1)+'M':'R$ '+fI(n);
+const fBF=n=>'R$ '+fI(n);
+const eOE=t=>t>=1?1:1-Math.pow(2,-10*t);
+
+function animStd(px,cur,tgt,d,brl){
+  const DUR=2400,s=performance.now(),el=id=>document.getElementById(px+'-'+id);
+  function tick(now){const t=eOE(Math.min((now-s)/DUR,1)),h=Math.round(cur*t);el('hero').textContent=brl?fBF(h):fI(h);el('bar').style.width=(d.pct*t)+'%';el('pct').textContent=fD(d.pct*t,2)+'%';el('rem').textContent=brl?fB(tgt-h):tgt>=1e6?fS(tgt-h):fI(tgt-h);if(t>.08)el('factor').textContent=fD(Math.min(tgt/Math.max(h,1),999),1)+'x';el('monthly').textContent=(brl?fB(d.monthly*t):fS(d.monthly*t))+'/mês';el('cagr').textContent='~'+fD(d.cagr*t,0)+'%';el('nextsub').textContent=fD(d.nextPct*t,0)+'% do caminho';el('nextbar').style.width=(d.nextPct*t)+'%';el('msline').style.width=(16.67*t)+'%';if((now-s)/DUR<1)requestAnimationFrame(tick);else{el('hero').textContent=brl?fBF(cur):fI(cur);el('bar').style.width=d.pct+'%';el('pct').textContent=fD(d.pct,2)+'%';el('rem').textContent=brl?fB(d.rem):tgt>=1e6?fS(d.rem):fI(d.rem);el('factor').textContent=fD(d.factor,1)+'x';el('monthly').textContent=(brl?fB(d.monthly):fS(d.monthly))+'/mês';el('cagr').textContent='~'+fD(d.cagr,0)+'%';el('nextsub').textContent=fD(d.nextPct,0)+'% do caminho';el('nextbar').style.width=d.nextPct+'%';el('msline').style.width='16.67%';}}requestAnimationFrame(tick);
+}
+function animM(){const DUR=2400,s=performance.now(),el=id=>document.getElementById('m-'+id);function tick(now){const t=eOE(Math.min((now-s)/DUR,1));el('hero').textContent=Math.round(MONTHS_LEFT*t)+' meses';el('bar').style.width=(TIME_PCT*t)+'%';el('pctc').textContent=fD(C.pct*t,2)+'%';el('barc').style.width=(C.pct*t)+'%';el('pcth').textContent=fD(H.pct*t,2)+'%';el('barh').style.width=(H.pct*t)+'%';el('pcta').textContent=fD(A.pct*t,2)+'%';el('bara').style.width=(A.pct*t)+'%';el('avg').textContent=fD(AVG*t,2)+'%';if(t>.15){el('best').textContent=BEST.l;el('bestsub').textContent=BEST.n+' · '+fD(BEST.p*t,1)+'%';}if((now-s)/DUR<1)requestAnimationFrame(tick);else{el('hero').textContent=MONTHS_LEFT+' meses';el('bar').style.width=TIME_PCT+'%';el('pctc').textContent=fD(C.pct,2)+'%';el('barc').style.width=C.pct+'%';el('pcth').textContent=fD(H.pct,2)+'%';el('barh').style.width=H.pct+'%';el('pcta').textContent=fD(A.pct,2)+'%';el('bara').style.width=A.pct+'%';el('avg').textContent=fD(AVG,2)+'%';el('best').textContent=BEST.l;el('bestsub').textContent=BEST.n+' · '+fD(BEST.p,1)+'%';}}requestAnimationFrame(tick);}
+function animP(){const DUR=2400,s=performance.now(),el=id=>document.getElementById('p-'+id);function tick(now){const t=eOE(Math.min((now-s)/DUR,1));el('speed').textContent=fD(AVG*t,2)+'%';el('pillars').textContent=Math.min(5,Math.ceil(t*5))+'/5';if(t>.4)el('horizon').textContent='∞';if((now-s)/DUR<1)requestAnimationFrame(tick);else{el('speed').textContent=fD(AVG,2)+'%';el('pillars').textContent='5/5';el('horizon').textContent='∞';}}requestAnimationFrame(tick);}
+
+const animators=[
+  ()=>{}, // overview: CSS-only card stagger
+  ()=>animStd('c',DATA.c.current,DATA.c.target,C,false),
+  ()=>animStd('h',DATA.h.current,DATA.h.target,H,false),
+  ()=>animStd('a',DATA.a.current,DATA.a.target,A,true),
+  ()=>animM(),
+  ()=>animP()
+];
+
+// ══════ SLIDE CONTROLLER — 90s auto-play ══════
+const INTERVAL=90000;
+const slides=document.querySelectorAll('.slide');
+let current=0,timer=null;
+
+function resetCardAnims(){
+  const cards=document.querySelectorAll('.slide--overview .card');
+  cards.forEach(c=>{c.style.animation='none';c.offsetHeight;c.style.animation='';});
+}
+
+function goTo(idx){
+  slides[current].classList.remove('active');
+  current=((idx%slides.length)+slides.length)%slides.length;
+  slides[current].classList.add('active');
+  if(current===0) resetCardAnims();
+  setTimeout(animators[current],900);
+  startProgress();
+}
+
+function startProgress(){
+  const bar=document.getElementById('progressBar');
+  bar.style.transition='none';bar.style.width='0%';bar.offsetWidth;
+  bar.style.transition=`width ${INTERVAL}ms linear`;bar.style.width='100%';
+}
+
+clearInterval(timer);
+timer=setInterval(()=>goTo(current+1),INTERVAL);
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){clearInterval(timer);goTo(current+1);timer=setInterval(()=>goTo(current+1),INTERVAL);}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){clearInterval(timer);goTo(current-1);timer=setInterval(()=>goTo(current+1),INTERVAL);}
+});
+
+startProgress();
+</script>
+</body>
+</html>
